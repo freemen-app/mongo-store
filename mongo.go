@@ -15,8 +15,13 @@ type (
 		Collection(name string, opts ...*options.CollectionOptions) *mongo.Collection
 	}
 
+	Sessioner interface {
+		StartSession(opts ...*options.SessionOptions) (mongo.Session, error)
+	}
+
 	Store interface {
 		MongoClient
+		Sessioner
 		Start() error
 		IsRunning() bool
 		Shutdown()
@@ -54,6 +59,7 @@ func (s *store) Start() error {
 	s.isRunning = true
 	s.Client = client
 	s.Database = client.Database(s.conf.DB)
+
 	return nil
 }
 
